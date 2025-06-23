@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, Twitter, Linkedin, Instagram, Facebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CompanyCard from "@/components/CompanyCard";
 import FounderCard from "@/components/FounderCard";
@@ -168,9 +168,11 @@ const Index = () => {
               <Link to="/founders" className="text-black hover:text-gray-600 transition-colors">
                 Founders
               </Link>
-              <Button variant="outline" className="border-black text-black hover:bg-black hover:text-white">
-                Join Community
-              </Button>
+              <Link to="/join">
+                <Button variant="outline" className="border-black text-black hover:bg-black hover:text-white">
+                  Join Community
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -271,12 +273,16 @@ const Index = () => {
               Connect with innovative founders, discover groundbreaking startups, and be part of the entrepreneurial revolution. Whether you're building the next unicorn or looking to invest in the future, our community is where opportunities meet ambition.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" className="bg-white text-black hover:bg-gray-100 w-full sm:w-auto">
-                Join Community
-              </Button>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-black w-full sm:w-auto">
-                Submit Your Startup
-              </Button>
+              <Link to="/join">
+                <Button size="lg" className="bg-white text-black hover:bg-gray-100 w-full sm:w-auto">
+                  Join Community
+                </Button>
+              </Link>
+              <Link to="/join">
+                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-black w-full sm:w-auto">
+                  Submit Your Startup
+                </Button>
+              </Link>
             </div>
             <div className="flex justify-center mt-8">
               <ArrowDown className="w-6 h-6 text-gray-400 animate-bounce" />
@@ -298,6 +304,32 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-black text-white py-12">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col items-center space-y-6">
+            <h3 className="text-2xl font-bold">Founders Gang</h3>
+            <div className="flex space-x-6">
+              <a href="#" className="hover:text-gray-400 transition-colors">
+                <Twitter className="w-6 h-6" />
+              </a>
+              <a href="#" className="hover:text-gray-400 transition-colors">
+                <Linkedin className="w-6 h-6" />
+              </a>
+              <a href="#" className="hover:text-gray-400 transition-colors">
+                <Instagram className="w-6 h-6" />
+              </a>
+              <a href="#" className="hover:text-gray-400 transition-colors">
+                <Facebook className="w-6 h-6" />
+              </a>
+            </div>
+            <p className="text-gray-400 text-center">
+              © 2024 Founders Gang. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

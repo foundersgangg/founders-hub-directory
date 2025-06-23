@@ -9,6 +9,7 @@ import Companies from "./pages/Companies";
 import Founders from "./pages/Founders";
 import CompanyDetail from "./pages/CompanyDetail";
 import FounderDetail from "./pages/FounderDetail";
+import JoinCommunity from "./pages/JoinCommunity";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/founders" element={<Founders />} />
           <Route path="/company/:slug" element={<CompanyDetail />} />
           <Route path="/founder/:slug" element={<FounderDetail />} />
+          <Route path="/join" element={<JoinCommunity />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
