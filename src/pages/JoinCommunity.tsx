@@ -1,16 +1,16 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const JoinCommunity = () => {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     founderName: "",
     email: "",
@@ -21,40 +21,73 @@ const JoinCommunity = () => {
     startupStage: "",
     website: "",
     teamSize: "",
-    lookingFor: [] as string[]
+    lookingFor: ""
   });
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleCheckboxChange = (value: string, checked: boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      lookingFor: checked 
-        ? [...prev.lookingFor, value]
-        : prev.lookingFor.filter(item => item !== value)
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    toast({
-      title: "Application Submitted!",
-      description: "Thank you for joining the Founders Gang community. We'll be in touch soon!",
-    });
-  };
+    setIsSubmitting(true);
+    
+    try {
+      const { error } = await supabase
+        .from('community_applications')
+        .insert([
+          {
+            founder_name: formData.founderName,
+            email: formData.email,
+            phone: formData.phone,
+            city_state: formData.cityState,
+            startup_name: formData.startupName,
+            startup_description: formData.startupDescription,
+            startup_stage: formData.startupStage,
+            website: formData.website || null,
+            team_size: parseInt(formData.teamSize),
+            looking_for: formData.lookingFor
+          }
+        ]);
 
-  const lookingForOptions = [
-    "Feedback",
-    "Co-founders or teammates", 
-    "Mentorship",
-    "Early users",
-    "Investors",
-    "Networking",
-    "Nothing right now"
-  ];
+      if (error) {
+        console.error('Error submitting application:', error);
+        toast({
+          title: "Error",
+          description: "There was an error submitting your application. Please try again.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Application Submitted!",
+          description: "Thank you for joining the Founders Gang community. We'll be in touch soon!",
+        });
+        
+        // Reset form
+        setFormData({
+          founderName: "",
+          email: "",
+          phone: "",
+          cityState: "",
+          startupName: "",
+          startupDescription: "",
+          startupStage: "",
+          website: "",
+          teamSize: "",
+          lookingFor: ""
+        });
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -207,29 +240,25 @@ const JoinCommunity = () => {
             </div>
 
             <div>
-              <Label>What are you looking for right now?</Label>
-              <div className="mt-2 space-y-3">
-                {lookingForOptions.map((option) => (
-                  <div key={option} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={option}
-                      checked={formData.lookingFor.includes(option)}
-                      onCheckedChange={(checked) => handleCheckboxChange(option, checked as boolean)}
-                    />
-                    <Label htmlFor={option} className="text-sm font-normal">
-                      {option}
-                    </Label>
-                  </div>
-                ))}
-              </div>
+              <Label htmlFor="lookingFor">What are you looking for right now?</Label>
+              <Input
+                id="lookingFor"
+                type="text"
+                value={formData.lookingFor}
+                onChange={(e) => handleInputChange("lookingFor", e.target.value)}
+                required
+                className="mt-1"
+                placeholder="e.g., Feedback, Co-founders, Mentorship, Early users, Investors, Networking"
+              />
             </div>
 
             <Button 
               type="submit" 
               className="w-full bg-black text-white hover:bg-gray-800"
               size="lg"
+              disabled={isSubmitting}
             >
-              Join Community
+              {isSubmitting ? "Submitting..." : "Join Community"}
             </Button>
           </form>
         </div>
