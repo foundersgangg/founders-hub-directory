@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowUp, Twitter, Link as LinkIcon } from "lucide-react";
+import { Helmet } from 'react-helmet-async';
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -86,8 +87,42 @@ const CompanyDetail = () => {
     );
   }
 
+  const companyLogo = company.logo || "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=1200&h=630&fit=crop&crop=center";
+  const currentUrl = `${window.location.origin}/company/${company.slug}`;
+
   return (
     <div className="min-h-screen bg-white">
+      <Helmet>
+        <title>{company.name} - Company Profile | Founders Gang</title>
+        <meta name="description" content={`Learn about ${company.name}, ${company.description}. Founded in ${company.founded || 'N/A'}, ${company.industry} industry. ${company.about || ''}`} />
+        <meta name="keywords" content={`${company.name}, startup, ${company.industry}, company profile, founders gang, ${company.location || ''}`} />
+        <link rel="canonical" href={currentUrl} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="profile" />
+        <meta property="og:url" content={currentUrl} />
+        <meta property="og:title" content={`${company.name} - Company Profile | Founders Gang`} />
+        <meta property="og:description" content={`Learn about ${company.name}, ${company.description}. Founded in ${company.founded || 'N/A'} in the ${company.industry} industry.`} />
+        <meta property="og:image" content={companyLogo} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={`${company.name} logo`} />
+        <meta property="og:site_name" content="Founders Gang" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={currentUrl} />
+        <meta name="twitter:title" content={`${company.name} - Company Profile | Founders Gang`} />
+        <meta name="twitter:description" content={`Learn about ${company.name}, ${company.description}. Founded in ${company.founded || 'N/A'} in the ${company.industry} industry.`} />
+        <meta name="twitter:image" content={companyLogo} />
+        <meta name="twitter:image:alt" content={`${company.name} logo`} />
+        
+        {/* Additional SEO tags */}
+        <meta name="author" content="Founders Gang" />
+        <meta name="robots" content="index, follow" />
+        {company.founded && <meta name="article:published_time" content={`${company.founded}-01-01T00:00:00Z`} />}
+      </Helmet>
+
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">
         <div className="container mx-auto px-6 py-4">

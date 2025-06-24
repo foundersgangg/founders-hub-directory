@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Twitter, Link as LinkIcon } from "lucide-react";
+import { Helmet } from 'react-helmet-async';
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -59,8 +60,43 @@ const FounderDetail = () => {
     );
   }
 
+  const founderImage = founder.image || "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=1200&h=630&fit=crop&crop=center";
+  const currentUrl = `${window.location.origin}/founder/${founder.slug}`;
+
   return (
     <div className="min-h-screen bg-white">
+      <Helmet>
+        <title>{founder.name} - Founder Profile | Founders Gang</title>
+        <meta name="description" content={`Meet ${founder.name}, ${founder.title}${founder.company ? ` at ${founder.company}` : ''}. ${founder.bio || ''} Based in ${founder.location || 'N/A'}.`} />
+        <meta name="keywords" content={`${founder.name}, founder, entrepreneur, startup founder, ${founder.company || ''}, founders gang, ${founder.location || ''}`} />
+        <link rel="canonical" href={currentUrl} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="profile" />
+        <meta property="og:url" content={currentUrl} />
+        <meta property="og:title" content={`${founder.name} - Founder Profile | Founders Gang`} />
+        <meta property="og:description" content={`Meet ${founder.name}, ${founder.title}${founder.company ? ` at ${founder.company}` : ''}. ${founder.bio || ''}`} />
+        <meta property="og:image" content={founderImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={`${founder.name} - Founder`} />
+        <meta property="og:site_name" content="Founders Gang" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={currentUrl} />
+        <meta name="twitter:title" content={`${founder.name} - Founder Profile | Founders Gang`} />
+        <meta name="twitter:description" content={`Meet ${founder.name}, ${founder.title}${founder.company ? ` at ${founder.company}` : ''}. ${founder.bio || ''}`} />
+        <meta name="twitter:image" content={founderImage} />
+        <meta name="twitter:image:alt" content={`${founder.name} - Founder`} />
+        
+        {/* Additional SEO tags */}
+        <meta name="author" content="Founders Gang" />
+        <meta name="robots" content="index, follow" />
+        <meta property="profile:first_name" content={founder.name.split(' ')[0]} />
+        <meta property="profile:last_name" content={founder.name.split(' ').slice(1).join(' ')} />
+      </Helmet>
+
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">
         <div className="container mx-auto px-6 py-4">
