@@ -1,42 +1,79 @@
 
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowUp, Twitter, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-// Mock data - in real app this would come from API
-const companyData: { [key: string]: any } = {
-  "techflow": {
-    name: "TechFlow",
-    logo: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=200&h=200&fit=crop&crop=center",
-    description: "TechFlow is revolutionizing business automation with AI-powered workflow solutions that help companies streamline their operations and boost productivity by up to 300%.",
-    industry: "AI & Automation",
-    funding: "$2.5M",
-    founded: "2023",
-    employees: "15-20",
-    location: "San Francisco, CA",
-    website: "https://techflow.com",
-    twitter: "techflow",
-    about: "TechFlow was born from the frustration of repetitive business tasks that drain productivity. Our AI-powered platform learns your workflow patterns and automates complex processes, allowing teams to focus on strategic work that drives growth. We've helped over 200 companies save an average of 15 hours per week through intelligent automation.",
-    founder: {
-      name: "Sarah Chen",
-      slug: "sarah-chen",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=center",
-      title: "CEO & Co-founder"
-    },
-    metrics: [
-      { label: "Monthly Active Users", value: "10K+" },
-      { label: "Customer Retention", value: "95%" },
-      { label: "Average Time Saved", value: "15hrs/week" },
-      { label: "Enterprise Clients", value: "50+" }
-    ]
-  }
-};
+import { supabase } from "@/integrations/supabase/client";
 
 const CompanyDetail = () => {
   const { slug } = useParams();
-  const company = companyData[slug as string];
+  const [company, setCompany] = useState<any>(null);
+  const [founder, setFounder] = useState<any>(null);
+  const [metrics, setMetrics] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!company) {
+  useEffect(() => {
+    if (slug) {
+      fetchCompany(slug);
+    }
+  }, [slug]);
+
+  const fetchCompany = async (companySlug: string) => {
+    setLoading(true);
+    setError(null);
+    
+    // Fetch company data
+    const { data: companyData, error: companyError } = await supabase
+      .from('companies')
+      .select('*')
+      .eq('slug', companySlug)
+      .single();
+
+    if (companyError) {
+      console.error('Error fetching company:', companyError);
+      setError('Company not found');
+      setLoading(false);
+      return;
+    }
+
+    setCompany(companyData);
+
+    // Fetch company metrics
+    const { data: metricsData } = await supabase
+      .from('company_metrics')
+      .select('*')
+      .eq('company_id', companyData.id);
+
+    if (metricsData) {
+      setMetrics(metricsData);
+    }
+
+    // Fetch founder for this company
+    const { data: founderData } = await supabase
+      .from('founders')
+      .select('*')
+      .eq('company_slug', companySlug)
+      .single();
+
+    if (founderData) {
+      setFounder(founderData);
+    }
+
+    setLoading(false);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">Loading company...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !company) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
@@ -77,7 +114,7 @@ const CompanyDetail = () => {
             <div className="flex flex-col md:flex-row gap-8 items-start">
               <div className="w-32 h-32 rounded-2xl overflow-hidden shadow-lg flex-shrink-0">
                 <img 
-                  src={company.logo}
+                  src={company.logo || "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=200&h=200&fit=crop&crop=center"}
                   alt={`${company.name} logo`}
                   className="w-full h-full object-cover"
                 />
@@ -91,22 +128,30 @@ const CompanyDetail = () => {
                   <span className="px-3 py-1 bg-gray-100 text-black rounded-full text-sm">
                     {company.industry}
                   </span>
-                  <span className="px-3 py-1 bg-gray-100 text-black rounded-full text-sm">
-                    {company.funding} raised
-                  </span>
-                  <span className="px-3 py-1 bg-gray-100 text-black rounded-full text-sm">
-                    Founded {company.founded}
-                  </span>
+                  {company.funding && (
+                    <span className="px-3 py-1 bg-gray-100 text-black rounded-full text-sm">
+                      {company.funding} raised
+                    </span>
+                  )}
+                  {company.founded && (
+                    <span className="px-3 py-1 bg-gray-100 text-black rounded-full text-sm">
+                      Founded {company.founded}
+                    </span>
+                  )}
                 </div>
                 <div className="flex gap-4">
-                  <Button className="bg-black text-white hover:bg-gray-800">
-                    <LinkIcon className="w-4 h-4 mr-2" />
-                    Visit Website
-                  </Button>
-                  <Button variant="outline" className="border-black text-black hover:bg-black hover:text-white">
-                    <Twitter className="w-4 h-4 mr-2" />
-                    Follow
-                  </Button>
+                  {company.website && (
+                    <Button className="bg-black text-white hover:bg-gray-800">
+                      <LinkIcon className="w-4 h-4 mr-2" />
+                      Visit Website
+                    </Button>
+                  )}
+                  {company.twitter && (
+                    <Button variant="outline" className="border-black text-black hover:bg-black hover:text-white">
+                      <Twitter className="w-4 h-4 mr-2" />
+                      Follow
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
@@ -119,65 +164,79 @@ const CompanyDetail = () => {
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2 space-y-8">
-              <div>
-                <h2 className="text-2xl font-bold text-black mb-4">About {company.name}</h2>
-                <p className="text-gray-600 leading-relaxed">{company.about}</p>
-              </div>
-              
-              <div>
-                <h3 className="text-xl font-bold text-black mb-4">Key Metrics</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  {company.metrics.map((metric: any, index: number) => (
-                    <div key={index} className="p-4 border border-gray-200 rounded-lg">
-                      <div className="text-2xl font-bold text-black">{metric.value}</div>
-                      <div className="text-sm text-gray-600">{metric.label}</div>
-                    </div>
-                  ))}
+              {company.about && (
+                <div>
+                  <h2 className="text-2xl font-bold text-black mb-4">About {company.name}</h2>
+                  <p className="text-gray-600 leading-relaxed">{company.about}</p>
                 </div>
-              </div>
+              )}
+              
+              {metrics.length > 0 && (
+                <div>
+                  <h3 className="text-xl font-bold text-black mb-4">Key Metrics</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {metrics.map((metric: any, index: number) => (
+                      <div key={index} className="p-4 border border-gray-200 rounded-lg">
+                        <div className="text-2xl font-bold text-black">{metric.value}</div>
+                        <div className="text-sm text-gray-600">{metric.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="space-y-8">
               <div className="p-6 border border-gray-200 rounded-lg">
                 <h3 className="text-lg font-bold text-black mb-4">Company Details</h3>
                 <div className="space-y-3">
-                  <div>
-                    <span className="text-sm text-gray-600">Location</span>
-                    <div className="font-medium text-black">{company.location}</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Team Size</span>
-                    <div className="font-medium text-black">{company.employees}</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Founded</span>
-                    <div className="font-medium text-black">{company.founded}</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Funding</span>
-                    <div className="font-medium text-black">{company.funding}</div>
-                  </div>
+                  {company.location && (
+                    <div>
+                      <span className="text-sm text-gray-600">Location</span>
+                      <div className="font-medium text-black">{company.location}</div>
+                    </div>
+                  )}
+                  {company.employees && (
+                    <div>
+                      <span className="text-sm text-gray-600">Team Size</span>
+                      <div className="font-medium text-black">{company.employees}</div>
+                    </div>
+                  )}
+                  {company.founded && (
+                    <div>
+                      <span className="text-sm text-gray-600">Founded</span>
+                      <div className="font-medium text-black">{company.founded}</div>
+                    </div>
+                  )}
+                  {company.funding && (
+                    <div>
+                      <span className="text-sm text-gray-600">Funding</span>
+                      <div className="font-medium text-black">{company.funding}</div>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="p-6 border border-gray-200 rounded-lg">
-                <h3 className="text-lg font-bold text-black mb-4">Founder</h3>
-                <Link to={`/founder/${company.founder.slug}`} className="block group">
-                  <div className="flex items-center gap-3">
-                    <img 
-                      src={company.founder.image}
-                      alt={company.founder.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                    <div>
-                      <div className="font-medium text-black group-hover:text-gray-600 transition-colors">
-                        {company.founder.name}
+              {founder && (
+                <div className="p-6 border border-gray-200 rounded-lg">
+                  <h3 className="text-lg font-bold text-black mb-4">Founder</h3>
+                  <Link to={`/founder/${founder.slug}`} className="block group">
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src={founder.image || "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=center"}
+                        alt={founder.name}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                      <div>
+                        <div className="font-medium text-black group-hover:text-gray-600 transition-colors">
+                          {founder.name}
+                        </div>
+                        <div className="text-sm text-gray-600">{founder.title}</div>
                       </div>
-                      <div className="text-sm text-gray-600">{company.founder.title}</div>
                     </div>
-                  </div>
-                </Link>
-              </div>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>

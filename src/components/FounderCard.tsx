@@ -41,13 +41,9 @@ const FounderCard = ({ founder }: FounderCardProps) => {
             <ArrowUp className="w-4 h-4 text-gray-400 group-hover:text-black transition-colors transform group-hover:-translate-y-1 rotate-45" />
           </div>
           <p className="text-sm text-gray-600 mb-1">{founder.title}</p>
-          <Link 
-            to={`/company/${founder.companySlug}`} 
-            className="text-sm text-black hover:text-gray-600 transition-colors font-medium"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="text-sm text-black font-medium">
             {founder.company}
-          </Link>
+          </div>
         </div>
         
         <p className="text-gray-600 text-sm leading-relaxed mb-3 line-clamp-3">
