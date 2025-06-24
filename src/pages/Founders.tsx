@@ -59,7 +59,7 @@ const Founders = () => {
 
         <div className="pt-32 pb-16">
           <div className="container mx-auto px-6">
-            <AddFounder form 
+            <AddFounderForm 
               onSuccess={handleAddSuccess} 
               onCancel={() => setShowAddForm(false)} 
             />
