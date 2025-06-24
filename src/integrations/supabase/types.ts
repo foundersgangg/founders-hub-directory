@@ -57,6 +57,176 @@ export type Database = {
         }
         Relationships: []
       }
+      companies: {
+        Row: {
+          about: string | null
+          created_at: string
+          description: string
+          employees: string | null
+          founded: string | null
+          funding: string | null
+          id: string
+          industry: string
+          location: string | null
+          logo: string | null
+          name: string
+          slug: string
+          twitter: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          about?: string | null
+          created_at?: string
+          description: string
+          employees?: string | null
+          founded?: string | null
+          funding?: string | null
+          id?: string
+          industry: string
+          location?: string | null
+          logo?: string | null
+          name: string
+          slug: string
+          twitter?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          about?: string | null
+          created_at?: string
+          description?: string
+          employees?: string | null
+          founded?: string | null
+          funding?: string | null
+          id?: string
+          industry?: string
+          location?: string | null
+          logo?: string | null
+          name?: string
+          slug?: string
+          twitter?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      company_metrics: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          label: string
+          value: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          label: string
+          value: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          label?: string
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      founders: {
+        Row: {
+          achievements: string[] | null
+          background: string | null
+          bio: string | null
+          company: string | null
+          company_slug: string | null
+          created_at: string
+          id: string
+          image: string | null
+          linkedin: string | null
+          location: string | null
+          name: string
+          previous_experience: Json | null
+          slug: string
+          title: string
+          twitter: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          achievements?: string[] | null
+          background?: string | null
+          bio?: string | null
+          company?: string | null
+          company_slug?: string | null
+          created_at?: string
+          id?: string
+          image?: string | null
+          linkedin?: string | null
+          location?: string | null
+          name: string
+          previous_experience?: Json | null
+          slug: string
+          title: string
+          twitter?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          achievements?: string[] | null
+          background?: string | null
+          bio?: string | null
+          company?: string | null
+          company_slug?: string | null
+          created_at?: string
+          id?: string
+          image?: string | null
+          linkedin?: string | null
+          location?: string | null
+          name?: string
+          previous_experience?: Json | null
+          slug?: string
+          title?: string
+          twitter?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id: string
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          role?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
