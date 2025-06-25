@@ -42,7 +42,7 @@ const Founders = () => {
         <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">
           <div className="container mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
-              <Link to="/" className="text-2xl font-bold text-black">
+              <Link to="/" className="text-2xl font-dream font-bold text-black">
                 Founders Gang
               </Link>
               <div className="hidden md:flex items-center space-x-8">
@@ -75,7 +75,7 @@ const Founders = () => {
       <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="text-2xl font-bold text-black">
+            <Link to="/" className="text-2xl font-dream font-bold text-black">
               Founders Gang
             </Link>
             <div className="hidden md:flex items-center space-x-8">
@@ -95,7 +95,7 @@ const Founders = () => {
         <div className="container mx-auto px-6">
           <div className="text-center space-y-6 max-w-3xl mx-auto">
             <div className="flex items-center justify-center gap-4">
-              <h1 className="text-4xl lg:text-5xl font-bold text-black">
+              <h1 className="text-4xl lg:text-5xl font-dream font-bold text-black">
                 Founder Directory
               </h1>
               {isAdmin && (

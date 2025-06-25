@@ -53,7 +53,7 @@ const HiddenAuth = () => {
       <div className="min-h-screen bg-white flex items-center justify-center p-6">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">Admin Panel</CardTitle>
+            <CardTitle className="text-2xl font-dream font-bold">Admin Panel</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-center text-gray-600">
@@ -84,7 +84,7 @@ const HiddenAuth = () => {
     <div className="min-h-screen bg-white flex items-center justify-center p-6">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
+          <CardTitle className="text-2xl font-dream font-bold">Admin Login</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignIn} className="space-y-4">

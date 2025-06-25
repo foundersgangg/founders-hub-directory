@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Twitter, Link as LinkIcon } from "lucide-react";
@@ -51,7 +50,7 @@ const FounderDetail = () => {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-black mb-4">Founder not found</h1>
+          <h1 className="text-2xl font-dream font-bold text-black mb-4">Founder not found</h1>
           <Link to="/founders">
             <Button>Back to Founders</Button>
           </Link>
@@ -101,7 +100,7 @@ const FounderDetail = () => {
       <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="text-2xl font-bold text-black">
+            <Link to="/" className="text-2xl font-dream font-bold text-black">
               Founders Gang
             </Link>
             <div className="hidden md:flex items-center space-x-8">
@@ -130,7 +129,7 @@ const FounderDetail = () => {
               </div>
               <div className="flex-1 space-y-6">
                 <div>
-                  <h1 className="text-4xl font-bold text-black mb-2">{founder.name}</h1>
+                  <h1 className="text-4xl font-dream font-bold text-black mb-2">{founder.name}</h1>
                   <p className="text-xl text-gray-600 mb-2">{founder.title}</p>
                   {founder.company && founder.company_slug && (
                     <Link to={`/company/${founder.company_slug}`} className="text-lg text-black hover:text-gray-600 transition-colors font-medium">
@@ -173,14 +172,14 @@ const FounderDetail = () => {
             <div className="lg:col-span-2 space-y-8">
               {founder.background && (
                 <div>
-                  <h2 className="text-2xl font-bold text-black mb-4">Background</h2>
+                  <h2 className="text-2xl font-dream font-bold text-black mb-4">Background</h2>
                   <p className="text-gray-600 leading-relaxed">{founder.background}</p>
                 </div>
               )}
               
               {founder.previous_experience && Array.isArray(founder.previous_experience) && founder.previous_experience.length > 0 && (
                 <div>
-                  <h3 className="text-xl font-bold text-black mb-4">Previous Experience</h3>
+                  <h3 className="text-xl font-dream font-bold text-black mb-4">Previous Experience</h3>
                   <div className="space-y-4">
                     {founder.previous_experience.map((exp: any, index: number) => (
                       <div key={index} className="p-4 border border-gray-200 rounded-lg">
@@ -200,7 +199,7 @@ const FounderDetail = () => {
             <div className="space-y-8">
               {founder.achievements && founder.achievements.length > 0 && (
                 <div className="p-6 border border-gray-200 rounded-lg">
-                  <h3 className="text-lg font-bold text-black mb-4">Achievements</h3>
+                  <h3 className="text-lg font-dream font-bold text-black mb-4">Achievements</h3>
                   <ul className="space-y-2">
                     {founder.achievements.map((achievement: string, index: number) => (
                       <li key={index} className="text-gray-600 text-sm">
@@ -213,7 +212,7 @@ const FounderDetail = () => {
 
               {founder.company && founder.company_slug && (
                 <div className="p-6 border border-gray-200 rounded-lg">
-                  <h3 className="text-lg font-bold text-black mb-4">Current Company</h3>
+                  <h3 className="text-lg font-dream font-bold text-black mb-4">Current Company</h3>
                   <Link to={`/company/${founder.company_slug}`} className="block group">
                     <div className="text-center">
                       <div className="font-semibold text-black group-hover:text-gray-600 transition-colors mb-1">
