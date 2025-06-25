@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Twitter, Link as LinkIcon } from "lucide-react";
@@ -39,6 +40,10 @@ const FounderDetail = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
+        <Helmet>
+          <title>Loading Founder | Founders Gang</title>
+          <meta name="description" content="Loading founder information..." />
+        </Helmet>
         <div className="text-center">
           <p className="text-gray-600">Loading founder...</p>
         </div>
@@ -49,6 +54,11 @@ const FounderDetail = () => {
   if (error || !founder) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
+        <Helmet>
+          <title>Founder Not Found | Founders Gang</title>
+          <meta name="description" content="The requested founder could not be found." />
+          <meta name="robots" content="noindex" />
+        </Helmet>
         <div className="text-center">
           <h1 className="text-2xl font-dream font-bold text-black mb-4">Founder not found</h1>
           <Link to="/founders">
@@ -61,39 +71,72 @@ const FounderDetail = () => {
 
   const founderImage = founder.image || "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=1200&h=630&fit=crop&crop=center";
   const currentUrl = `${window.location.origin}/founder/${founder.slug}`;
+  const founderTitle = `${founder.name} - ${founder.title}${founder.company ? ` at ${founder.company}` : ''} | Founders Gang`;
+  const founderDescription = `Meet ${founder.name}, ${founder.title}${founder.company ? ` at ${founder.company}` : ''}. ${founder.bio || ''}${founder.location ? ` Based in ${founder.location}.` : ''} ${founder.background ? founder.background.substring(0, 100) + '...' : ''}`;
 
   return (
     <div className="min-h-screen bg-white">
       <Helmet>
-        <title>{founder.name} - Founder Profile | Founders Gang</title>
-        <meta name="description" content={`Meet ${founder.name}, ${founder.title}${founder.company ? ` at ${founder.company}` : ''}. ${founder.bio || ''} Based in ${founder.location || 'N/A'}.`} />
-        <meta name="keywords" content={`${founder.name}, founder, entrepreneur, startup founder, ${founder.company || ''}, founders gang, ${founder.location || ''}`} />
+        <title>{founderTitle}</title>
+        <meta name="description" content={founderDescription} />
+        <meta name="keywords" content={`${founder.name}, founder, entrepreneur, startup founder, ${founder.company || ''}, founders gang, ${founder.location || ''}, ${founder.title}`} />
         <link rel="canonical" href={currentUrl} />
         
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="profile" />
         <meta property="og:url" content={currentUrl} />
-        <meta property="og:title" content={`${founder.name} - Founder Profile | Founders Gang`} />
-        <meta property="og:description" content={`Meet ${founder.name}, ${founder.title}${founder.company ? ` at ${founder.company}` : ''}. ${founder.bio || ''}`} />
+        <meta property="og:title" content={founderTitle} />
+        <meta property="og:description" content={founderDescription} />
         <meta property="og:image" content={founderImage} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content={`${founder.name} - Founder`} />
+        <meta property="og:image:alt" content={`${founder.name} - Founder Profile`} />
         <meta property="og:site_name" content="Founders Gang" />
+        <meta property="og:locale" content="en_US" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@foundersgang" />
+        <meta name="twitter:creator" content={founder.twitter ? `@${founder.twitter.replace('@', '')}` : "@foundersgang"} />
         <meta name="twitter:url" content={currentUrl} />
-        <meta name="twitter:title" content={`${founder.name} - Founder Profile | Founders Gang`} />
-        <meta name="twitter:description" content={`Meet ${founder.name}, ${founder.title}${founder.company ? ` at ${founder.company}` : ''}. ${founder.bio || ''}`} />
+        <meta name="twitter:title" content={founderTitle} />
+        <meta name="twitter:description" content={founderDescription} />
         <meta name="twitter:image" content={founderImage} />
-        <meta name="twitter:image:alt" content={`${founder.name} - Founder`} />
+        <meta name="twitter:image:alt" content={`${founder.name} - Founder Profile`} />
         
         {/* Additional SEO tags */}
-        <meta name="author" content="Founders Gang" />
-        <meta name="robots" content="index, follow" />
+        <meta name="author" content={`${founder.name}, Founders Gang`} />
+        <meta name="robots" content="index, follow, max-image-preview:large" />
+        <meta name="theme-color" content="#000000" />
         <meta property="profile:first_name" content={founder.name.split(' ')[0]} />
         <meta property="profile:last_name" content={founder.name.split(' ').slice(1).join(' ')} />
+        {founder.website && <link rel="alternate" href={founder.website} />}
+        
+        {/* Schema.org structured data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": founder.name,
+            "jobTitle": founder.title,
+            "description": founder.bio || founder.background,
+            "url": founder.website || currentUrl,
+            "image": founderImage,
+            "worksFor": founder.company ? {
+              "@type": "Organization",
+              "name": founder.company
+            } : undefined,
+            "address": founder.location ? {
+              "@type": "PostalAddress",
+              "addressLocality": founder.location
+            } : undefined,
+            "sameAs": [
+              founder.twitter && `https://twitter.com/${founder.twitter.replace('@', '')}`,
+              founder.linkedin && founder.linkedin,
+              founder.website
+            ].filter(Boolean)
+          })}
+        </script>
       </Helmet>
 
       {/* Navigation */}
